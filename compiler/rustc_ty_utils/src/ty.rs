@@ -402,8 +402,10 @@ fn issue33140_self_ty(tcx: TyCtxt<'_>, def_id: DefId) -> Option<Ty<'_>> {
 }
 
 /// Check if a function is async.
+/// 
 fn asyncness(tcx: TyCtxt<'_>, def_id: DefId) -> hir::IsAsync {
     let node = tcx.hir().get_by_def_id(def_id.expect_local());
+    let _a = tcx.trigger_cycle(def_id);
     node.fn_sig().map_or(hir::IsAsync::NotAsync, |sig| sig.header.asyncness)
 }
 
@@ -449,8 +451,11 @@ fn unsizing_params_for_adt<'tcx>(tcx: TyCtxt<'tcx>, def_id: DefId) -> BitSet<u32
             }
         }
     }
-
     unsizing_params
+}
+
+fn trigger_cycle<'tcx>(tcx: TyCtxt<'tcx>, def_id: DefId) -> () {
+    tcx.trigger_cycle(def_id)
 }
 
 pub fn provide(providers: &mut ty::query::Providers) {
@@ -463,6 +468,7 @@ pub fn provide(providers: &mut ty::query::Providers) {
         issue33140_self_ty,
         impl_defaultness,
         unsizing_params_for_adt,
+        trigger_cycle,
         ..*providers
     };
 }

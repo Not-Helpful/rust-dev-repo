@@ -26,6 +26,10 @@ rustc_queries! {
         desc { "triggering a delay span bug" }
     }
 
+    query trigger_cycle(key: DefId) -> () {
+        desc { "Triggering a cycle" }
+    }
+
     query resolutions(_: ()) -> &'tcx ty::ResolverGlobalCtxt {
         feedable
         no_hash

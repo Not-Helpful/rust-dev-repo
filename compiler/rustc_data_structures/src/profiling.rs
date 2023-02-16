@@ -834,6 +834,12 @@ cfg_if! {
             }
         }
     } else if #[cfg(unix)] {
+        // Gets resident Size variable from proc statm.
+        // This tells the compiler how much memory the compiler
+        // itself is taking up. The compiler then multiplies 
+        // this number by 4096 to get the number of bytes.
+        
+        // Returns: The Number of Bytes
         pub fn get_resident_set_size() -> Option<usize> {
             let field = 1;
             let contents = fs::read("/proc/self/statm").ok()?;
